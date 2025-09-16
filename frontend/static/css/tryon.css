@@ -1,0 +1,364 @@
+/* Virtual Try-On Page Specific Styles */
+
+.tryon-container {
+    display: flex;
+    height: calc(100vh - 80px);
+    gap: 20px;
+    padding: 20px;
+}
+
+.camera-section {
+    flex: 2;
+    background: #000;
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.controls-section {
+    flex: 1;
+    background: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+}
+
+#video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+#canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.camera-placeholder {
+    color: #fff;
+    text-align: center;
+    font-size: 18px;
+}
+
+.camera-placeholder i {
+    font-size: 64px;
+    margin-bottom: 20px;
+    opacity: 0.5;
+}
+
+.clothing-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.clothing-item {
+    background: #f8f9fa;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    padding: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.clothing-item:hover {
+    border-color: #007bff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.clothing-item.selected {
+    border-color: #28a745;
+    background: #e8f5e8;
+}
+
+.clothing-item img {
+    width: 100%;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-bottom: 8px;
+}
+
+.clothing-item h5 {
+    font-size: 14px;
+    margin: 0;
+    color: #333;
+}
+
+.clothing-item .price {
+    font-size: 12px;
+    color: #666;
+    margin: 5px 0 0 0;
+}
+
+.size-selector {
+    margin: 20px 0;
+}
+
+.size-options {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.size-option {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #fff;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 14px;
+}
+
+.size-option:hover {
+    border-color: #007bff;
+}
+
+.size-option.selected {
+    background: #007bff;
+    color: #fff;
+    border-color: #007bff;
+}
+
+.size-option.recommended {
+    border-color: #28a745;
+    background: #e8f5e8;
+    position: relative;
+}
+
+.size-option.recommended::after {
+    content: "★";
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    color: #28a745;
+    font-size: 12px;
+}
+
+.control-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.btn {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-primary {
+    background: #007bff;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background: #0056b3;
+}
+
+.btn-success {
+    background: #28a745;
+    color: #fff;
+}
+
+.btn-success:hover {
+    background: #1e7e34;
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: #fff;
+}
+
+.btn-secondary:hover {
+    background: #545b62;
+}
+
+.btn-purple {
+    background: #6f42c1;
+    color: #fff;
+}
+
+.btn-purple:hover {
+    background: #5a32a3;
+}
+
+.status-panel {
+    background: #f8f9fa;
+    border-radius: 6px;
+    padding: 15px;
+    margin: 20px 0;
+    border-left: 4px solid #007bff;
+}
+
+.status-panel h6 {
+    margin: 0 0 10px 0;
+    color: #333;
+    font-size: 14px;
+}
+
+.status-item {
+    display: flex;
+    justify-content: space-between;
+    margin: 5px 0;
+    font-size: 13px;
+}
+
+.status-value {
+    font-weight: 500;
+}
+
+.status-value.good {
+    color: #28a745;
+}
+
+.status-value.warning {
+    color: #ffc107;
+}
+
+.status-value.error {
+    color: #dc3545;
+}
+
+.pose-indicators {
+    display: flex;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.pose-indicator {
+    flex: 1;
+    text-align: center;
+    padding: 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    background: #e9ecef;
+    color: #6c757d;
+}
+
+.pose-indicator.active {
+    background: #28a745;
+    color: #fff;
+}
+
+.settings-panel {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #dee2e6;
+}
+
+.setting-item {
+    margin: 15px 0;
+}
+
+.setting-item label {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.setting-item input[type="range"] {
+    width: 100%;
+}
+
+.setting-item input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+.loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 18px;
+    z-index: 10;
+}
+
+.spinner {
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top: 3px solid #fff;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.error-message {
+    background: #f8d7da;
+    color: #721c24;
+    padding: 12px;
+    border-radius: 6px;
+    margin: 10px 0;
+    border: 1px solid #f5c6cb;
+    font-size: 14px;
+}
+
+.success-message {
+    background: #d4edda;
+    color: #155724;
+    padding: 12px;
+    border-radius: 6px;
+    margin: 10px 0;
+    border: 1px solid #c3e6cb;
+    font-size: 14px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .tryon-container {
+        flex-direction: column;
+        height: auto;
+    }
+    
+    .camera-section {
+        height: 300px;
+    }
+    
+    .clothing-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .control-buttons {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    
+    .btn {
+        flex: 1;
+        min-width: calc(50% - 5px);
+    }
+}

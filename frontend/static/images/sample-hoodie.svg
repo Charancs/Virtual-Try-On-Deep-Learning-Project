@@ -1,0 +1,10 @@
+<!-- Placeholder for sample hoodie image -->
+<svg width="300" height="300" xmlns="http://www.w3.org/2000/svg">
+  <rect width="300" height="300" fill="#f5f5dc"/>
+  <rect x="40" y="70" width="220" height="160" fill="#8b4513" rx="15"/>
+  <rect x="20" y="90" width="70" height="120" fill="#8b4513" rx="10"/>
+  <rect x="210" y="90" width="70" height="120" fill="#8b4513" rx="10"/>
+  <circle cx="150" cy="90" r="25" fill="#654321"/>
+  <text x="150" y="160" text-anchor="middle" fill="white" font-family="Arial" font-size="16">Sample Hoodie</text>
+  <text x="150" y="180" text-anchor="middle" fill="white" font-family="Arial" font-size="12">$59.99</text>
+</svg>

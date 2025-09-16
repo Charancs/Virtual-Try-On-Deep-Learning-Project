@@ -1,0 +1,11 @@
+<!-- Placeholder for sample jacket image -->
+<svg width="300" height="300" xmlns="http://www.w3.org/2000/svg">
+  <rect width="300" height="300" fill="#f0f0f0"/>
+  <rect x="30" y="70" width="240" height="160" fill="#2f4f4f" rx="12"/>
+  <rect x="10" y="90" width="70" height="120" fill="#2f4f4f" rx="10"/>
+  <rect x="220" y="90" width="70" height="120" fill="#2f4f4f" rx="10"/>
+  <rect x="50" y="90" width="20" height="120" fill="#1c1c1c"/>
+  <rect x="230" y="90" width="20" height="120" fill="#1c1c1c"/>
+  <text x="150" y="170" text-anchor="middle" fill="white" font-family="Arial" font-size="16">Sample Jacket</text>
+  <text x="150" y="190" text-anchor="middle" fill="white" font-family="Arial" font-size="12">$129.99</text>
+</svg>

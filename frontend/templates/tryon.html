@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Try-On - Real-Time Fashion Experience</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="{{ url_for('static', filename='css/tryon.css') }}" rel="stylesheet">
+    
+    <style>
+        .video-container {
+            position: relative;
+            background: #000;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .overlay-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 2;
+        }
+        
+        .controls-panel {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .measurement-display {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+        }
+        
+        .size-recommendation {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            border-radius: 10px;
+        }
+        
+        .clothing-item {
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .clothing-item:hover {
+            transform: scale(1.05);
+        }
+        
+        .loading-spinner {
+            display: none;
+        }
+        
+        .pose-landmarks {
+            fill: #ff4757;
+            stroke: #2f3542;
+            stroke-width: 2;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-magic me-2"></i>Virtual Try-On
+            </a>
+            
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/">
+                    <i class="fas fa-home me-1"></i>Home
+                </a>
+                <a class="nav-link" href="/catalog">
+                    <i class="fas fa-shopping-bag me-1"></i>Catalog
+                </a>
+                <a class="nav-link" href="/profile">
+                    <i class="fas fa-user me-1"></i>Profile
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid py-4">
+        <div class="row">
+            <!-- Left Panel - Camera and Controls -->
+            <div class="col-lg-8">
+                <div class="row">
+                    <!-- Camera Feed -->
+                    <div class="col-12 mb-4">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-camera me-2"></i>Live Camera Feed
+                                </h5>
+                                <div>
+                                    <button id="startCamera" class="btn btn-success btn-sm">
+                                        <i class="fas fa-play me-1"></i>Start Camera
+                                    </button>
+                                    <button id="stopCamera" class="btn btn-danger btn-sm" disabled>
+                                        <i class="fas fa-stop me-1"></i>Stop Camera
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body p-3">
+                                <div class="video-container position-relative">
+                                    <video id="videoElement" width="640" height="480" autoplay muted></video>
+                                    <canvas id="overlayCanvas" width="640" height="480" class="overlay-canvas"></canvas>
+                                </div>
+                                
+                                <div class="mt-3 d-flex justify-content-center">
+                                    <button id="capturePhoto" class="btn btn-primary me-2" disabled>
+                                        <i class="fas fa-camera me-1"></i>Capture Photo
+                                    </button>
+                                    <button id="saveToWishlist" class="btn btn-outline-primary me-2" disabled>
+                                        <i class="fas fa-heart me-1"></i>Save Look
+                                    </button>
+                                    <button id="toggle3DView" class="btn btn-outline-info" disabled>
+                                        <i class="fas fa-cube me-1"></i>3D View
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Controls Panel -->
+                    <div class="col-12">
+                        <div class="card controls-panel">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-sliders-h me-2"></i>Try-On Controls
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <h6>Pose Detection</h6>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="enablePoseDetection" checked>
+                                            <label class="form-check-label" for="enablePoseDetection">
+                                                Enable Detection
+                                            </label>
+                                        </div>
+                                        <div class="mt-2">
+                                            <label class="form-label">Confidence Threshold</label>
+                                            <input type="range" class="form-range" id="confidenceThreshold" 
+                                                   min="0.3" max="0.9" step="0.1" value="0.5">
+                                            <small class="text-muted">Current: <span id="confidenceValue">0.5</span></small>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-4">
+                                        <h6>Size Estimation</h6>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="enableSizeEstimation" checked>
+                                            <label class="form-check-label" for="enableSizeEstimation">
+                                                Auto Size Recommendation
+                                            </label>
+                                        </div>
+                                        <div class="mt-2">
+                                            <label class="form-label">Preferred Fit</label>
+                                            <select class="form-select" id="preferredFit">
+                                                <option value="tight">Tight</option>
+                                                <option value="fitted">Fitted</option>
+                                                <option value="regular" selected>Regular</option>
+                                                <option value="loose">Loose</option>
+                                                <option value="oversized">Oversized</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-4">
+                                        <h6>Virtual Try-On</h6>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="enableVirtualTryon">
+                                            <label class="form-check-label" for="enableVirtualTryon">
+                                                Enable Virtual Overlay
+                                            </label>
+                                        </div>
+                                        <div class="mt-2">
+                                            <label class="form-label">Opacity</label>
+                                            <input type="range" class="form-range" id="overlayOpacity" 
+                                                   min="0.3" max="1.0" step="0.1" value="0.8">
+                                            <small class="text-muted">Current: <span id="opacityValue">0.8</span></small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Panel - Information and Clothing Selection -->
+            <div class="col-lg-4">
+                <div class="row">
+                    <!-- Body Measurements -->
+                    <div class="col-12 mb-4">
+                        <div class="card measurement-display">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-ruler me-2"></i>Body Measurements
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="measurementsList">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Shoulder Width:</span>
+                                        <span id="shoulderWidth">--</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Chest Width:</span>
+                                        <span id="chestWidth">--</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Waist Width:</span>
+                                        <span id="waistWidth">--</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Hip Width:</span>
+                                        <span id="hipWidth">--</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <span>Torso Length:</span>
+                                        <span id="torsoLength">--</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-3 text-center">
+                                    <small class="opacity-75">Measurements update in real-time</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Size Recommendation -->
+                    <div class="col-12 mb-4">
+                        <div class="card size-recommendation">
+                            <div class="card-body text-center">
+                                <h5 class="mb-2">
+                                    <i class="fas fa-bullseye me-2"></i>Recommended Size
+                                </h5>
+                                <h2 class="mb-2" id="recommendedSize">--</h2>
+                                <div class="progress mb-2" style="height: 6px;">
+                                    <div class="progress-bar bg-white" id="confidenceBar" 
+                                         style="width: 0%"></div>
+                                </div>
+                                <small id="confidenceText">Confidence: 0%</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Selected Clothing Item -->
+                    <div class="col-12 mb-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-tshirt me-2"></i>Selected Item
+                                </h5>
+                            </div>
+                            <div class="card-body" id="selectedItemDisplay">
+                                <div class="text-center text-muted">
+                                    <i class="fas fa-shopping-bag fa-3x mb-3 opacity-50"></i>
+                                    <p>Select a clothing item from the catalog below</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Clothing Selection -->
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-bolt me-2"></i>Quick Select
+                                </h5>
+                                <a href="/catalog" class="btn btn-sm btn-outline-primary">
+                                    View All
+                                </a>
+                            </div>
+                            <div class="card-body">
+                                <div class="row g-2" id="quickClothingGrid">
+                                    <!-- Clothing items will be loaded here via JavaScript -->
+                                    <div class="col-6">
+                                        <div class="clothing-item border p-2" data-item-id="1">
+                                            <img src="{{ url_for('static', filename='images/sample-tshirt.jpg') }}" 
+                                                 alt="T-Shirt" class="img-fluid">
+                                            <small class="d-block text-center mt-1">White T-Shirt</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="clothing-item border p-2" data-item-id="2">
+                                            <img src="{{ url_for('static', filename='images/sample-hoodie.jpg') }}" 
+                                                 alt="Hoodie" class="img-fluid">
+                                            <small class="d-block text-center mt-1">Black Hoodie</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="clothing-item border p-2" data-item-id="3">
+                                            <img src="{{ url_for('static', filename='images/sample-dress.jpg') }}" 
+                                                 alt="Dress" class="img-fluid">
+                                            <small class="d-block text-center mt-1">Summer Dress</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="clothing-item border p-2" data-item-id="4">
+                                            <img src="{{ url_for('static', filename='images/sample-jacket.jpg') }}" 
+                                                 alt="Jacket" class="img-fluid">
+                                            <small class="d-block text-center mt-1">Denim Jacket</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Modal -->
+    <div class="modal fade" id="loadingModal" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center py-4">
+                    <div class="loading-spinner spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;"></div>
+                    <h5 id="loadingText">Processing...</h5>
+                    <p class="text-muted mb-0" id="loadingSubtext">Please wait while we analyze your pose</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3D View Modal -->
+    <div class="modal fade" id="threeDModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">360° 3D View</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="threeDViewer" style="height: 600px; background: #f8f9fa;">
+                        <div class="d-flex align-items-center justify-content-center h-100">
+                            <div class="text-center">
+                                <i class="fas fa-cube fa-3x text-muted mb-3"></i>
+                                <p class="text-muted">3D viewer will be rendered here</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-outline-secondary" id="resetView">
+                            <i class="fas fa-redo me-1"></i>Reset View
+                        </button>
+                        <button type="button" class="btn btn-outline-primary" id="autoRotate">
+                            <i class="fas fa-sync-alt me-1"></i>Auto Rotate
+                        </button>
+                        <button type="button" class="btn btn-primary" id="save3DView">
+                            <i class="fas fa-save me-1"></i>Save View
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Socket.IO -->
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <!-- Custom JS -->
+    <script src="{{ url_for('static', filename='js/tryon.js') }}"></script>
+</body>
+</html>

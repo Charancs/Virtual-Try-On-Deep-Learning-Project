@@ -1,0 +1,132 @@
+# Model Configuration for Virtual Try-On System
+
+# MediaPipe Pose Detection Configuration
+pose_detection:
+  model_complexity: 1  # 0=Light, 1=Full, 2=Heavy
+  min_detection_confidence: 0.5
+  min_tracking_confidence: 0.5
+  enable_segmentation: true
+  smooth_landmarks: true
+  static_image_mode: false
+
+# PIFuHD 3D Human Digitization Configuration
+pifuhd:
+  resolution: 512
+  z_size: 200.0
+  num_views: 1
+  use_front_normal: true
+  use_back_normal: false
+  num_sample_inout: 5000
+  num_sample_color: 5000
+  sigma: 5.0
+  gamma: 1e-3
+
+# VITON Virtual Try-On Configuration
+viton:
+  fine_width: 192
+  fine_height: 256
+  semantic_nc: 13
+  load_width: 192
+  load_height: 256
+  radius: 5
+  grid_size: 5
+  lr: 0.0002
+  decay_step: 100000
+  decay_gamma: 0.5
+  checkpoint_dir: "models/trained/viton"
+  
+# Size Estimation Model Configuration
+size_estimation:
+  model_type: "xgboost"  # Options: xgboost, random_forest, neural_network
+  features:
+    - "shoulder_width"
+    - "chest_width" 
+    - "waist_width"
+    - "hip_width"
+    - "torso_length"
+    - "arm_length"
+  size_categories:
+    - "XS"
+    - "S" 
+    - "M"
+    - "L"
+    - "XL"
+    - "XXL"
+  confidence_threshold: 0.7
+
+# TensorFlow Configuration
+tensorflow:
+  gpu_memory_growth: true
+  allow_soft_placement: true
+  log_device_placement: false
+  inter_op_parallelism_threads: 0
+  intra_op_parallelism_threads: 0
+
+# Image Processing Configuration
+image_processing:
+  max_image_size: [1024, 1024]
+  supported_formats: ["jpg", "jpeg", "png", "bmp"]
+  color_space: "RGB"
+  normalization:
+    mean: [0.485, 0.456, 0.406]
+    std: [0.229, 0.224, 0.225]
+
+# Data Augmentation Configuration
+data_augmentation:
+  rotation_range: 10
+  width_shift_range: 0.1
+  height_shift_range: 0.1
+  brightness_range: [0.8, 1.2]
+  zoom_range: [0.9, 1.1]
+  horizontal_flip: true
+  vertical_flip: false
+
+# Training Configuration
+training:
+  batch_size: 8
+  epochs: 100
+  learning_rate: 0.001
+  optimizer: "adam"
+  loss_function: "categorical_crossentropy"
+  metrics: ["accuracy"]
+  validation_split: 0.2
+  early_stopping:
+    patience: 10
+    monitor: "val_loss"
+    restore_best_weights: true
+
+# Inference Configuration
+inference:
+  batch_size: 1
+  use_gpu: true
+  fp16: false
+  max_batch_size: 4
+  enable_caching: true
+  cache_size: 100
+
+# Performance Monitoring
+performance:
+  log_fps: true
+  log_memory_usage: true
+  log_gpu_usage: true
+  profiling_enabled: false
+
+# Unity3D Integration
+unity:
+  webgl_build: true
+  compression: true
+  texture_quality: "medium"
+  shadow_quality: "medium"
+  anti_aliasing: 2
+
+# Security Configuration
+security:
+  max_file_size_mb: 10
+  allowed_mime_types:
+    - "image/jpeg"
+    - "image/png" 
+    - "image/bmp"
+  scan_uploads: true
+  rate_limiting:
+    requests_per_minute: 60
+    requests_per_hour: 1000

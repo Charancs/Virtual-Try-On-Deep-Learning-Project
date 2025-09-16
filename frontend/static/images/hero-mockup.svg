@@ -1,0 +1,36 @@
+<!-- Hero mockup image -->
+<svg width="600" height="400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="600" height="400" fill="url(#bg)"/>
+  
+  <!-- Person silhouette -->
+  <ellipse cx="300" cy="120" rx="40" ry="50" fill="#fff" opacity="0.9"/>
+  <rect x="260" y="170" width="80" height="120" fill="#fff" opacity="0.9" rx="10"/>
+  <rect x="240" y="180" width="30" height="80" fill="#fff" opacity="0.9" rx="8"/>
+  <rect x="330" y="180" width="30" height="80" fill="#fff" opacity="0.9" rx="8"/>
+  <rect x="270" y="290" width="25" height="80" fill="#fff" opacity="0.9" rx="6"/>
+  <rect x="305" y="290" width="25" height="80" fill="#fff" opacity="0.9" rx="6"/>
+  
+  <!-- Virtual clothing overlay -->
+  <rect x="260" y="170" width="80" height="120" fill="#ff6b6b" opacity="0.8" rx="10"/>
+  
+  <!-- Interface elements -->
+  <rect x="50" y="50" width="120" height="80" fill="#fff" opacity="0.9" rx="8"/>
+  <text x="110" y="75" text-anchor="middle" fill="#333" font-family="Arial" font-size="12">Camera Feed</text>
+  <text x="110" y="95" text-anchor="middle" fill="#333" font-family="Arial" font-size="10">Real-time Pose</text>
+  <text x="110" y="110" text-anchor="middle" fill="#333" font-family="Arial" font-size="10">Detection</text>
+  
+  <rect x="430" y="50" width="120" height="80" fill="#fff" opacity="0.9" rx="8"/>
+  <text x="490" y="75" text-anchor="middle" fill="#333" font-family="Arial" font-size="12">Try-On Result</text>
+  <text x="490" y="95" text-anchor="middle" fill="#333" font-family="Arial" font-size="10">AI-Powered</text>
+  <text x="490" y="110" text-anchor="middle" fill="#333" font-family="Arial" font-size="10">Virtual Fitting</text>
+  
+  <!-- Title -->
+  <text x="300" y="350" text-anchor="middle" fill="#fff" font-family="Arial" font-size="24" font-weight="bold">Virtual Try-On System</text>
+  <text x="300" y="380" text-anchor="middle" fill="#fff" font-family="Arial" font-size="16">Experience the future of online shopping</text>
+</svg>

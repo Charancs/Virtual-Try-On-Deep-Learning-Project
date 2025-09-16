@@ -1,0 +1,52 @@
+# Core Flask Dependencies
+Flask
+Flask-SQLAlchemy
+Flask-Login
+Flask-WTF
+Flask-CORS
+Flask-SocketIO
+Werkzeug
+
+# Database
+PyMySQL
+SQLAlchemy
+cryptography
+
+# Environment & Configuration
+python-dotenv
+PyYAML
+
+# Computer Vision & AI/ML
+opencv-python
+mediapipe
+tensorflow
+torch
+torchvision
+numpy
+pandas
+scikit-learn
+Pillow
+
+# Image Processing
+imageio
+matplotlib
+
+# Web & API
+requests
+python-socketio
+eventlet
+
+# Security & Authentication
+bcrypt
+PyJWT
+
+# Utilities
+click
+
+# Testing (Optional)
+pytest
+pytest-flask
+
+# Development (Optional)
+black
+flake8
